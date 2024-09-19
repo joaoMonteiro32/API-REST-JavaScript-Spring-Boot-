@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message</title>
+</head>
+<body>
+    <h1>Enviar Valor:Metadata do Pod</h1>
+    <h6 id="output">Loading...</h6>
+    <form id="messageForm">
+        <label for="messageInput">Message:</label>
+        <input type="text" id="messageInput" name="message" placeholder="number:name">
+        <button type="submit">Send Message</button>
+    </form>
+
+    <script>
+        // Function to fetch IP address from Spring Boot application
+        function fetchRemoveScriptIP() {
+            fetch('/api/getRemoveScriptIP')
+                .then(response => response.text())
+                .then(ipAddress => {
+                    // Update HTML content with retrieved IP address
+                    document.getElementById('output').innerText = 'Remove Script IP: ' + ipAddress;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Update HTML content with error message
+                    document.getElementById('output').innerText = 'Error: Unable to fetch IP address';
+                });
+        }
+        // Call the function to fetch the IP address when the page loads
+        fetchRemoveScriptIP();
+
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var message = document.getElementById('messageInput').value; // Get the value of the message input
+
+            // Create JSON payload
+            var jsonPayload = JSON.stringify({ "message": message });
+
+            // Send POST request
+            fetch('/remover', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonPayload
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert('Response: ' + data);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
